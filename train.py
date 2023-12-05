@@ -56,18 +56,25 @@ def parse_args():
 
 def main():
     # parse arguments
+    # 解析参数
     args = parse_args()
+    # 只在rank 0的进程/节点上, 用pretty print的方式打印出args这个对象的所有属性字典
     rank_zero_only(pprint.pprint)(vars(args))
 
     # init default-cfg and merge it with the main- and data-cfg
+    # 克隆模型配置参数
     config = get_cfg_defaults()
+    # 修改模型配置参数中的路径
     config.merge_from_file(args.main_cfg_path)
     config.merge_from_file(args.data_cfg_path)
+
+    # 使用PyTorch Lightning设置随机种子以确保可复现的训练
     pl.seed_everything(config.TRAINER.SEED)  # reproducibility
     # TODO: Use different seeds for each dataloader workers
     # This is needed for data augmentation
     
     # scale lr and warmup-step automatically
+    # 调整学习率和warmup步数
     args.gpus = _n_gpus = setup_gpus(args.gpus)
     config.TRAINER.WORLD_SIZE = _n_gpus * args.num_nodes
     config.TRAINER.TRUE_BATCH_SIZE = config.TRAINER.WORLD_SIZE * args.batch_size
@@ -116,8 +123,20 @@ def main():
         profiler=profiler)
     loguru_logger.info(f"Trainer initialized!")
     loguru_logger.info(f"Start training!")
+    # 开始训练
     trainer.fit(model, datamodule=data_module)
 
 
 if __name__ == '__main__':
+    # 神经网络的框架：
+    # 1. 数据
+    # 2. 模型
+    # 3. 优化器
+    # 4. 损失函数
+    # 5. 训练过程
+    # 6. 评估过程
+    # 7. 保存模型
+    # 8. 保存日志
+    # 9. 保存结果
+    # 模型开始
     main()

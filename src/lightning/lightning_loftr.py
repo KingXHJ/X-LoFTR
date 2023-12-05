@@ -79,6 +79,7 @@ class PL_LoFTR(pl.LightningModule):
         optimizer.step(closure=optimizer_closure)
         optimizer.zero_grad()
     
+    # 模型架构
     def _trainval_inference(self, batch):
         with self.profiler.profile("Compute coarse supervision"):
             compute_supervision_coarse(batch, self.config)
@@ -109,7 +110,9 @@ class PL_LoFTR(pl.LightningModule):
             ret_dict = {'metrics': metrics}
         return ret_dict, rel_pair_names
     
+    # 核心过程
     def training_step(self, batch, batch_idx):
+        # 查询模型的阶段
         self._trainval_inference(batch)
         
         # logging

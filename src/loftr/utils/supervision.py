@@ -17,7 +17,8 @@ def mask_pts_at_padded_regions(grid_pt, mask):
     grid_pt[~mask.bool()] = 0
     return grid_pt
 
-
+# 实际粗调过程
+# 冻结学习
 @torch.no_grad()
 def spvs_coarse(data, config):
     """
@@ -108,7 +109,7 @@ def spvs_coarse(data, config):
         'spv_pt1_i': grid_pt1_i
     })
 
-
+# 计算粗调
 def compute_supervision_coarse(data, config):
     assert len(set(data['dataset_name'])) == 1, "Do not support mixed datasets training!"
     data_source = data['dataset_name'][0]
