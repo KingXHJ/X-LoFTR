@@ -15,7 +15,9 @@ from src.config.default import get_cfg_defaults
 from src.utils.misc import get_rank_zero_only_logger, setup_gpus
 from src.utils.profiler import build_profiler
 from src.lightning.data import MultiSceneDataModule
-from src.lightning.lightning_loftr import PL_LoFTR
+from src.lightning.lightning_modified import PL_Modified
+# from src.lightning.lightning_loftr import PL_LoFTR
+
 
 loguru_logger = get_rank_zero_only_logger(loguru_logger)
 
@@ -85,7 +87,7 @@ def main():
     
     # lightning module
     profiler = build_profiler(args.profiler_name)
-    model = PL_LoFTR(config, pretrained_ckpt=args.ckpt_path, profiler=profiler)
+    model = PL_Modified(config, pretrained_ckpt=args.ckpt_path, profiler=profiler)
     loguru_logger.info(f"LoFTR LightningModule initialized!")
     
     # lightning data
